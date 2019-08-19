@@ -1,0 +1,24 @@
+{
+  "name": "movie-store-backend",
+  "version": "1.0.0",
+  "description": "This is the backend of the movie store",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "movie",
+    "actors",
+    "producer"
+  ],
+  "author": "Zakir Hussain",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server-express": "^2.8.1",
+    "babel-register": "^6.26.0",
+    "debug": "^4.1.1",
+    "express": "^4.17.1",
+    "http": "0.0.0",
+    "sequelize": "^5.15.1"
+  }
+}
