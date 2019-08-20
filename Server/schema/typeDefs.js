@@ -7,6 +7,7 @@ const typeDefs = gql`
     sex: String!
     dob: String!
     biodata: String!
+    movie: [Movie]
   }
 
   type Movie {
@@ -15,6 +16,7 @@ const typeDefs = gql`
     year_of_release: Int!
     plot: String!
     producer: [Producer]
+    actor: [Actor]
   }
 
   type Producer {
@@ -43,8 +45,8 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    addActor(name: String!, sex: String!, dob: String!, biodata: String!): Actor
-    editActor(
+    createActor(name: String!, sex: String!, dob: String!, biodata: String!): Actor
+    updateActor(
       id: Int!
       name: String
       sex: String
@@ -52,21 +54,21 @@ const typeDefs = gql`
       biodata: String
     ): Actor
     deleteActor(id: Int!): [Actor]
-    addMovie(name: String!, year_of_release: Int!, plot: String!): Movie
-    editMovie(
+    createMovie(name: String!, year_of_release: Int!, plot: String!): Movie
+    updateMovie(
       id: Int!
       name: String
       year_of_release: String
       plot: String
     ): Movie
     deleteMovie(id: Int!): [Movie]
-    addProducer(
+    createProducer(
       name: String!
       sex: String!
       dob: String!
       biodata: String!
     ): Producer
-    editProducer(
+    updateProducer(
       id: Int!
       name: String
       sex: String

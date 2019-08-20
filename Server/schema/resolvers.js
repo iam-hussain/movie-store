@@ -4,6 +4,30 @@ import { error } from "../helper/error-messages";
 import models from "../models/index";
 
 const resolvers = {
+  Actor: {
+    movie: async (parent, args) => {
+      var oneActor = await models.Actor.findOne({
+        where: { id: parent.id },
+        include: [{ model: models.Movie, as: "Movie" }]
+      });
+      return oneActor.Movie;
+    }
+  },
+  Movie: {
+    actor: async (parent, args) => {
+      var oneMovie = await models.Movie.findOne({
+        where: { id: parent.id },
+        include: [{ model: models.Actor, as: "Actor" }]
+      });
+      return oneMovie.Actor;
+    },
+    producer: async (parent, args) =>
+      await models.Producer.findAll({ where: { id: parent.producer_id } })
+  },
+  Producer: {
+    movie: async (parent, args) =>
+      await models.Movie.findAll({ where: { producer_id: parent.id } })
+  },
   Query: {
     allActors: async (parent, args, context) => {
       return await models.Actor.findAll();
@@ -37,7 +61,7 @@ const resolvers = {
     }
   },
   Mutation: {
-    addActor: async (parent, args) => {
+    createActor: async (parent, args) => {
       if (!args.name) throw new UserInputError(error.noName);
       if (!args.sex) throw new UserInputError(error.noSex);
       if (!args.dob) throw new UserInputError(error.noDOB);
@@ -51,20 +75,14 @@ const resolvers = {
         biodata: args.biodata
       });
     },
-    editActor: async (parent, args) => {
+    updateActor: async (parent, args) => {
       if (!args.id) throw new UserInputError(error.noID);
-      if (args.sex && args.sex != "Male" && args.sex != "Female")
-        throw new UserInputError(error.invalidBiodata);
-      await Actor.update(
-        {
-          args
-        },
-        {
+      if (args.sex && args.sex != "Male" && args.sex != "Female") throw new UserInputError(error.invalidBiodata);
+      await models.Actor.update({args},{
           where: {
             id: args.id
           }
-        }
-      );
+        });
       return await models.Actor.findOne({
         where: {
           id: args.id
@@ -80,7 +98,7 @@ const resolvers = {
       });
       return await models.Actor.findAll();
     },
-    addMovie: async (parent, args) => {
+    createMovie: async (parent, args) => {
       if (!args.name) throw new UserInputError(error.noName);
       if (!args.year_of_release) throw new UserInputError(error.noYear);
       if (!args.plot) throw new UserInputError(error.noPlot);
@@ -92,20 +110,15 @@ const resolvers = {
         plot: args.plot
       });
     },
-    editMovie: async (parent, args) => {
+    updateMovie: async (parent, args) => {
       if (!args.id) throw new UserInputError(error.noID);
       if (args.year_of_release && !args.year_of_release > 0)
         throw new UserInputError(error.invalidYear);
-      await Movie.update(
-        {
-          args
-        },
-        {
+      await models.Movie.update({args},{
           where: {
             id: args.id
           }
-        }
-      );
+        });
       return await models.Movie.findOne({
         where: {
           id: args.id
@@ -121,7 +134,7 @@ const resolvers = {
       });
       return await models.Movie.findAll();
     },
-    addProducer: async (parent, args) => {
+    createProducer: async (parent, args) => {
       if (!args.name) throw new UserInputError(error.noName);
       if (!args.sex) throw new UserInputError(error.noSex);
       if (!args.dob) throw new UserInputError(error.noDOB);
@@ -135,25 +148,17 @@ const resolvers = {
         biodata: args.biodata
       });
     },
-    editProducer: async (parent, args) => {
+    updateProducer: async (parent, args) => {
       if (!args.id) throw new UserInputError(error.noID);
       if (args.sex && args.sex != "Male" && args.sex != "Female")
         throw new UserInputError(error.invalidBiodata);
-      await Producer.update(
-        {
-          args
-        },
-        {
+
+      await models.Producer.update({args},{
           where: {
             id: args.id
           }
-        }
-      );
-      return await models.Producer.findOne({
-        where: {
-          id: args.id
-        }
-      });
+        });
+      return await models.Producer.findOne({where: {id: args.id}});
     },
     deleteProducer: async (parent, args) => {
       if (!args.id) throw new UserInputError(error.noID);
