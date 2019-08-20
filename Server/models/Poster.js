@@ -33,7 +33,7 @@ module.exports = function (sequelize, DataTypes) {
     });
 
     Poster.associate = function (db) {
-         db.Poster.belongsTo(db.Movie, { foreignKey: "poster_id", sourceKey: "id" });
+         db.Poster.belongsTo(db.Movie, { foreignKey: "movie_id", sourceKey: "id" });
     }
     return Poster;
 }

@@ -33,7 +33,8 @@ module.exports = function (sequelize, DataTypes) {
     });
 
     Movie.associate = function (db) {
-       db.Movie.hasMany(db.Poster, { foreignKey: "poster_id", sourceKey: "id" });
+       db.Movie.hasMany(db.Poster, { foreignKey: "movie_id", sourceKey: "id" });
+       db.Movie.belongsTo(db.Producer,{ foreignKey: "producer_id", sourceKey: "id" });
     }
     return Movie;
 }

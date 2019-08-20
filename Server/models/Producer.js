@@ -47,6 +47,7 @@ module.exports = function (sequelize, DataTypes) {
     });
 
     Producer.associate = function (db) {
+        db.Producer.hasMany(db.Movie,{ foreignKey: "producer_id", sourceKey: "id" });
     }
     return Producer;
 }
