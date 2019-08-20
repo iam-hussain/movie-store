@@ -1,30 +1,40 @@
 var debug = require("debug")("view-engine:server");
 var express = require("express");
+import { port } from "./config/config.json";
+import models from "./models/index.js";
+import { ApolloServer } from "apollo-server-express";
+
+import typeDefs from "./schema/typeDefs";
+import resolvers from "./schema/resolvers";
+
 var app = express();
-var http = require("http");
 
-import {port} from './config/config.json'
+app.use("/", express.static(__dirname + "/uploads"));
 
-import models from './models/index.js';
+const server = new ApolloServer({
+  typeDefs,
+  resolvers
+});
 
-app.use("/", express.static(__dirname + "/public"));
-
-app.set("port", port);
-
-var server = http.createServer(app);
+server.applyMiddleware({
+  app
+});
 
 models.sequelize
   .sync()
   .then(function() {
-    server.listen(port, function() {
-      console.log("Server Stated in Port :: " + port);
+    app.listen(port, function() {
+      console.log(
+        `🚀Server ready at http://localhost:${port}${server.graphqlPath}`
+      );
     });
-    server.on("error", onError);
-    server.on("listening", onListening);
+    app.on("error", onError);
+    app.on("listening", onListening);
   })
   .catch(function(e) {
     throw new Error(e);
   });
+
 /* Event listener for HTTP server "error" event.*/
 function onError(error) {
   if (error.syscall !== "listen") {

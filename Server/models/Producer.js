@@ -18,8 +18,8 @@ module.exports = function (sequelize, DataTypes) {
         sex: {
             type: DataTypes.ENUM,
             values: [
-                'male',
-                'female',
+                'Male',
+                'Female',
             ],
             defaultValue: 'male'
         },
