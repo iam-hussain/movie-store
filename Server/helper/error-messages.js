@@ -8,4 +8,7 @@ export const error = {
     noYear : "Year not found !",
     noPlot : "Plot not found !",
     invalidYear : "Invalid year input !",
+    noMovieID : "Movie ID not found !",
+    noActorID : "Actor ID not found !",
+    noProducerID : "Producer ID not found !",
   };

@@ -18,8 +18,8 @@ module.exports = function (sequelize, DataTypes) {
         sex: {
             type: DataTypes.ENUM,
             values: [
-                'Male',
-                'Female',
+                'male',
+                'female',
             ],
             defaultValue: 'male'
         },
@@ -28,7 +28,7 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: false,
             validate: { isDate: true },
             get: function () {
-                return moment.utc(this.getDataValue('dob')).format('YYYY-MM-DD')
+                return moment.utc(this.getDataValue('dob')).format('MMMM Do YYYY')
             },
             set: function (val) {
                 this.setDataValue('dob', new Date(val))

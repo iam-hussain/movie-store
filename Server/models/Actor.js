@@ -18,13 +18,13 @@ module.exports = function (sequelize, DataTypes) {
         sex: {
             type: DataTypes.ENUM,
             values: [
-                'Male',
-                'Female',
+                'male',
+                'female',
             ],
             defaultValue: 'male'
         },
         dob: {
-            type: DataTypes.DATEONLY,
+            type: DataTypes.DATE,
             allowNull: false,
             validate: { isDate: true },
             get: function () {

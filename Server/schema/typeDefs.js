@@ -1,6 +1,9 @@
 import { gql } from "apollo-server-express";
 
 const typeDefs = gql`
+  type returnStatus {
+    status: String!
+  }
   type Actor {
     id: ID!
     name: String!
@@ -39,29 +42,40 @@ const typeDefs = gql`
     allActors: [Actor]
     allMovies: [Movie]
     allProducers: [Producer]
-    singleActor(id: Int!): Actor
-    singleMovie(id: Int!): Movie
-    singleProducer(id: Int!): Producer
+    singleActor(id: ID!): Actor
+    singleMovie(id: ID!): Movie
+    singleProducer(id: ID!): Producer
   }
 
   type Mutation {
-    createActor(name: String!, sex: String!, dob: String!, biodata: String!): Actor
+    createActor(
+      name: String!
+      sex: String!
+      dob: String!
+      biodata: String!
+    ): Actor
     updateActor(
-      id: Int!
+      id: ID!
       name: String
       sex: String
       dob: String
       biodata: String
     ): Actor
-    deleteActor(id: Int!): [Actor]
-    createMovie(name: String!, year_of_release: Int!, plot: String!): Movie
+    deleteActor(id: ID!): [Actor]
+    createMovie(
+      name: String!
+      year_of_release: Int!
+      plot: String!
+      producer_id: Int!
+    ): Movie
     updateMovie(
-      id: Int!
+      id: ID!
       name: String
       year_of_release: String
       plot: String
+      producer_id: Int
     ): Movie
-    deleteMovie(id: Int!): [Movie]
+    deleteMovie(id: ID!): [Movie]
     createProducer(
       name: String!
       sex: String!
@@ -69,13 +83,15 @@ const typeDefs = gql`
       biodata: String!
     ): Producer
     updateProducer(
-      id: Int!
+      id: ID!
       name: String
       sex: String
       dob: String
       biodata: String
     ): Producer
-    deleteProducer(id: Int!): [Producer]
+    deleteProducer(id: ID!): [Producer]
+    createActorMovie(actor_id: ID!, movie_id: ID!): returnStatus
+    deleteActorMovie(actor_id: ID!, movie_id: ID!): returnStatus
   }
 `;
 
