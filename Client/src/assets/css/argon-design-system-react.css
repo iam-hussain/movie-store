@@ -9151,6 +9151,9 @@ textarea[resize="horizontal"] {
 .input-group-text {
   transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
 
+.input-group-ratio{
+  margin-right: 10px
+}
 .input-group-alternative {
   box-shadow: 0 1px 3px rgba(50, 50, 93, 0.15), 0 1px 0 rgba(0, 0, 0, 0.02);
   border: 0;

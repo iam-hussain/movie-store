@@ -71,31 +71,29 @@ class MainNavbar extends React.Component {
                   <NavItem>
                     <NavLink
                       className="nav-link-icon"
-                      href="/register"
-                      id="tooltipRegister"
+                      href="/movie"
+                      id="tooltipMovies"
                     >Movies
                       
                     </NavLink>
-                    <UncontrolledTooltip delay={0} target="tooltipRegister">
+                    <UncontrolledTooltip delay={0} target="tooltipMovies">
                       See all the latest movies
                     </UncontrolledTooltip>
                   </NavItem>
                   <NavItem>
-                    <NavLink className="nav-link-icon" id="tooltipLogin">
+                    <NavLink className="nav-link-icon" href="/actor" id="tooltipActors">
                        Actors
-                      
                     </NavLink>
-                    <UncontrolledTooltip delay={0} target="tooltipLogin">
+                    <UncontrolledTooltip delay={0} target="tooltipActors">
                     See all the movies actors
                     </UncontrolledTooltip>
                   </NavItem>
 
                   <NavItem>
-                    <NavLink className="nav-link-icon" id="tooltipLogin">
+                    <NavLink className="nav-link-icon" href="/producer" id="tooltipProducer">
                        Producer
-                     
                     </NavLink>
-                    <UncontrolledTooltip delay={0} target="tooltipLogin">
+                    <UncontrolledTooltip delay={0} target="tooltipProducer">
                     See all the movies producer
                     </UncontrolledTooltip>
                   </NavItem>

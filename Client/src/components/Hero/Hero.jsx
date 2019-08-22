@@ -1,18 +1,19 @@
-import React from "react";
+import React, {Component} from "react";
 
 // reactstrap components
 import {
-  Button,
   Container,
   Row,
   Col,
-  Badge,
-  Card,
-  CardBody,
-  CardImg
 } from "reactstrap";
 
-class Hero extends React.Component {
+class Hero extends Component {
+
+  movierouteChange() {
+    let path = `newPath`;
+    this.props.history.push('/movies');
+  }
+
   render() {
     return (
       <>
@@ -68,111 +69,6 @@ class Hero extends React.Component {
           </section>
           {/* 1st Hero Variation */}
         </div>
-        <section className="section section-lg pt-lg-0 mt--200">
-          <Container>
-            <Row className="justify-content-center">
-              <Col lg="12">
-                <Row className="row-grid">
-                  <Col lg="4">
-                    <Card className="card-lift--hover shadow border-0">
-                      <CardBody className="py-5">
-                        <div className="icon icon-shape icon-shape-primary rounded-circle mb-4">
-                          <i className="ni ni-check-bold" />
-                        </div>
-                        <h6 className="text-primary text-uppercase">
-                          Movies
-                        </h6>
-                        <p className="description mt-3">
-                        Explore complete collection of popular and blockbuster bollywood, hollywood, international & regional movies online. 
-                        </p>
-                        <Button
-                          className="mt-4"
-                          color="primary"
-                          href="#pablo"
-                          onClick={e => e.preventDefault()}
-                        >
-                          View all
-                        </Button>
-                        <Button
-                          className="mt-4"
-                          color="primary"
-                          href="#pablo"
-                          onClick={e => e.preventDefault()}
-                        >
-                          Add
-                        </Button>
-                      </CardBody>
-                    </Card>
-                  </Col>
-                  <Col lg="4">
-                    <Card className="card-lift--hover shadow border-0">
-                      <CardBody className="py-5">
-                        <div className="icon icon-shape icon-shape-success rounded-circle mb-4">
-                          <i className="ni ni-istanbul" />
-                        </div>
-                        <h6 className="text-success text-uppercase">
-                          Actors
-                        </h6>
-                        <p className="description mt-3">
-                        Explore complete collection of popular actors of bollywood, hollywood, international.
-                        </p>
-                        <Button
-                          className="mt-4"
-                          color="success"
-                          href="#pablo"
-                          onClick={e => e.preventDefault()}
-                        >
-                          View all
-                        </Button>
-                        <Button
-                          className="mt-4"
-                          color="success"
-                          href="#pablo"
-                          onClick={e => e.preventDefault()}
-                        >
-                          Add
-                        </Button>
-                        
-                      </CardBody>
-                    </Card>
-                  </Col>
-                  <Col lg="4">
-                    <Card className="card-lift--hover shadow border-0">
-                      <CardBody className="py-5">
-                        <div className="icon icon-shape icon-shape-warning rounded-circle mb-4">
-                          <i className="ni ni-planet" />
-                        </div>
-                        <h6 className="text-warning text-uppercase">
-                          Producer
-                        </h6>
-                        <p className="description mt-3">
-                        Explore complete collection of popular  and rich producer of bollywood, hollywood, international.
-                        </p>
-                        <Button
-                          className="mt-4"
-                          color="warning"
-                          href="#pablo"
-                          onClick={e => e.preventDefault()}
-                        >
-                          View all
-                        </Button>
-                        <Button
-                          className="mt-4"
-                          color="warning"
-                          href="#pablo"
-                          onClick={e => e.preventDefault()}
-                        >
-                          Add
-                        </Button>
-                        
-                      </CardBody>
-                    </Card>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </Container>
-        </section>
       </>
     );
   }
