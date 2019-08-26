@@ -3,8 +3,21 @@ import React, { Component } from "react";
 // reactstrap components
 import { Col, Card, Button } from "reactstrap";
 
+import withDeleteActor from "../../Query/deleteActor";
+
 class ActorCard extends Component {
+
+  async handleDelete(myID) {
+    await this.props.delete({
+      variables: {
+        id: myID,
+      }
+    });
+    await this.props.refetch()
+  }
+
   render() {
+    console.log("==============this.props.personData=============", this.props)
     return (
       <>
         {this.props.personData.map(person => (
@@ -17,9 +30,16 @@ class ActorCard extends Component {
                <ul className="list-unstyled mb-2">
                  <li>
                    <small className="text-muted  text-uppercase "> DOB : {person.dob}</small>
-                 </li>
-                 <li>
+                  <br />
                    <small className="text-muted  text-uppercase "> Sex : {person.sex}</small>
+                   <br />
+                   
+                   <small className="text-muted  text-uppercase "> Movie : 
+                   {person && person.movie ? person.movie.map((moviesname, i) => (
+                     i !== 0 ? " || " + moviesname.name : moviesname.name  
+                   )) : <></>}
+                   </small>
+                   <br />
                  </li>
                </ul>
                <p className="description mt-0 lead text-italic text-white">
@@ -42,7 +62,7 @@ class ActorCard extends Component {
                  className="mt-1"
                  color={this.props.color}
                  href="#pablo"
-                 onClick={e => e.preventDefault()}
+                 onClick={() => this.handleDelete(person.id)}
                >
                  Delete
                </Button>
@@ -55,4 +75,4 @@ class ActorCard extends Component {
   }
 }
 
-export default ActorCard
+export default withDeleteActor(ActorCard)

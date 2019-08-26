@@ -53,7 +53,7 @@ class Movie extends Component {
       <MovieCard
         movieData={this.props.movieData.allMovies}
         onOpen={data => this.updateModalState(data)}
-        refetch={this.props.refetch}
+        refetch={this.props.movieRefetch}
         color={this.state.hero_data.color}
       />
     );
@@ -83,7 +83,8 @@ class Movie extends Component {
           Text={this.state.modal_text}
           data_id={this.state.data_id}
           onClose={data => this.updateModalState(data)}
-          refetch={this.props.refetch}
+          refetch={this.props.movieRefetch}
+          modal_name={this.state.hero_data.modal_name}
         />
       </Fragment>
     );

@@ -28,7 +28,7 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: false,
             validate: { isDate: true },
             get: function () {
-                return moment.utc(this.getDataValue('dob')).format('MMMM Do YYYY')
+                return moment.utc(this.getDataValue('dob')).format("MM/DD/YYYY")
             },
             set: function (val) {
                 this.setDataValue('dob', new Date(val))

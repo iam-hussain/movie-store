@@ -10,6 +10,10 @@ const GET_ALL_ACTOR = gql`
       sex
       dob
       biodata
+      movie{
+        id
+        name
+      }
     }
   }
 `;
@@ -23,7 +27,7 @@ const withallActors = (Component) => {
                 actorData={data.allActors}
                 actorLoading={loading}
                 actorError={error}
-                refetch= {refetch}
+                actorRefetch= {refetch}
                 
             />
         )

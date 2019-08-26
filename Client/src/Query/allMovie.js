@@ -27,7 +27,7 @@ const withallMovies = (Component) => {
                 movieData={data}
                 movieLoading={loading}
                 movieError={error}
-                refetch = {refetch}
+                movieRefetch = {refetch}
             />
         )
     }

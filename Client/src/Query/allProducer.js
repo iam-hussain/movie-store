@@ -10,6 +10,10 @@ const GET_ALL_PRODUCER = gql`
         sex
         dob
         biodata
+        movie{
+            id
+            name
+        }
     }
   }
 `;
@@ -24,7 +28,7 @@ const withallProducers = (Component) => {
                 producersData={data}
                 producersLoading={loading}
                 producersError={error}
-                refetch={refetch}
+                producerRefetch={refetch}
             />
         )
     }

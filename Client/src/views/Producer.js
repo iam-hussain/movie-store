@@ -42,7 +42,7 @@ class Producer extends Component {
     });
     this.setState({
       modal_text: {
-        header_text: data.data_id === 0 ? "Create Actor" : "Update Actor",
+        header_text: data.data_id === 0 ? "Create Producer" : "Update Producer",
         btn_text: data.data_id === 0 ? "Create" : "Update"
       }
     });
@@ -59,6 +59,7 @@ class Producer extends Component {
         onOpen={data => this.updateModalState(data)}
         personData={this.props.producersData.allProducers}
         color={this.state.hero_data.color}
+        refetch={this.props.producerRefetch}
       />
     );
   }
@@ -86,7 +87,8 @@ class Producer extends Component {
           Text={this.state.modal_text}
           data_id={this.state.data_id}
           onClose={data => this.updateModalState(data)}
-          refetch={this.props.refetch}
+          refetch={this.props.producerRefetch}
+          modal_name={this.state.hero_data.modal_name}
         />
       </Fragment>
     );

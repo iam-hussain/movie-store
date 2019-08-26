@@ -28,6 +28,7 @@ import withMovie from "../../Query/singleMovie";
 import withUpdateMovie from "../../Query/updateMovie";
 import withCreateMovie from "../../Query/createMovie";
 import withallProducers from '../../Query/allProducer'
+
 class MovieModal extends Component {
   initialState = {
     id: this.props.Data ? this.props.Data.id : 0,
@@ -38,7 +39,8 @@ class MovieModal extends Component {
       : moment(new Date()).format("YYYY"),
     dropdownOpen: false,
     dropDownValue: "Select Producer",
-    producer_id: 0
+    producer_id: 0,
+    errorText: ""
   };
 
   state = this.initialState;
@@ -49,38 +51,44 @@ class MovieModal extends Component {
     }));
   }
 
-  handleData() {
+  async handleData() {
+    try{
     if (this.state.id !== 0) {
-      this.props.updateMovie({
+      await this.props.updateMovie({
         variables: {
           id: Number(this.state.id),
           name: this.state.name,
           year_of_release: this.state.year_of_release,
           plot: this.state.plot,
           producer_id: Number(this.state.producer_id)
-        },
-        onCompleted: () => {
-            this.props.refetch()
-          }
+        } 
       });
+      await this.props.refetch()
     } else {
-      this.props.createMovie({
+      await this.props.createMovie({
         variables: {
           name: this.state.name,
           year_of_release: this.state.year_of_release,
           plot: this.state.plot,
           producer_id: Number(this.state.producer_id)
-        },
-        onCompleted: () => {
-            this.props.refetch()
-          }
+        }
       });
+      await this.props.refetch()
     }
 
     this.props.onClose({
-      modal: "movieModal",
+      modal: this.props.modal_name,
       data_id: this.props.data_id
     });
+
+  } catch (e) {
+    if(e.message === "GraphQL error: Cannot add or update a child row: a foreign key constraint fails (`moviestore`.`movie`, CONSTRAINT `movie_ibfk_1` FOREIGN KEY (`producer_id`) REFERENCES `producer` (`id`) ON DELETE SET NULL ON UPDATE CASCADE)"){
+      e.message = "Unknown Producer"
+    }
+    this.setState({
+      errorText: e.message
+    });
+  }
   }
 
   changeValue(e) {
@@ -95,7 +103,6 @@ class MovieModal extends Component {
     this.setState({
       [event.target.name]: event.target.value
     });
-    console.log(this.props)
   };
 
   handleDateChange = data => {
@@ -117,7 +124,8 @@ class MovieModal extends Component {
           ? String(this.props.Data.year_of_release)
           : moment(new Date()).format("YYYY"),
           dropDownValue: this.props.Data && this.props.Data.producer ? this.props.Data.producer.name : "Select Producer",
-          producer_id: this.props.Data && this.props.Data.producer ? this.props.Data.producer.id : 0
+          producer_id: this.props.Data && this.props.Data.producer ? this.props.Data.producer.id : 0,
+          errorText:""
       });
     }
 
@@ -131,7 +139,7 @@ class MovieModal extends Component {
         isOpen={this.props.isOpen}
         toggle={() =>
           this.props.onClose({
-            modal: "movieModal",
+            modal: this.props.modal_name,
             data_id: this.props.data_id
           })
         }
@@ -141,6 +149,8 @@ class MovieModal extends Component {
             <CardBody className="px-lg-8 py-lg-8">
               <div className="text-center text-muted mb-4">
                 <b>{this.props.Text.header_text}</b>
+                <br />
+                <b className="text-danger">{this.state.errorText}</b>
               </div>
               <Form role="form">
                 <FormGroup

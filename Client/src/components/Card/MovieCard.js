@@ -6,15 +6,13 @@ import withDeleteMovie from "../../Query/deleteMovie";
 
 class MovieCard extends Component {
   state = {};
-  handleDelete(movieID) {
-    this.props.deleteMovie({
+  async handleDelete(movieID) {
+    await this.props.deleteMovie({
       variables: {
         id: movieID,
-      },
-      onCompleted: () => {
-        this.props.refetch()
       }
     });
+    await this.props.refetch()
   }
 
   render() {

@@ -59,7 +59,7 @@ class Actor extends Component {
       <ActorCard
         personData={this.props.actorData}
         onOpen={data => this.updateModalState(data)}
-        refetch={this.props.refetch}
+        refetch={this.props.actorRefetch}
         color={this.state.hero_data.color}
       />
     );
@@ -87,7 +87,10 @@ class Actor extends Component {
           Text={this.state.modal_text}
           data_id={this.state.data_id}
           onClose={data => this.updateModalState(data)}
-          refetch={this.props.refetch} />
+          refetch={this.props.actorRefetch} 
+          modal_name={this.state.hero_data.modal_name}
+          />
+          
       </Fragment>
     );
   }

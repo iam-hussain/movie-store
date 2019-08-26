@@ -164,7 +164,6 @@ const resolvers = {
       if (!args.sex) throw new UserInputError(error.noSex);
       if (!args.dob) throw new UserInputError(error.noDOB);
       if (!args.biodata) throw new UserInputError(error.noBiodata);
-      if (!args.producer_id) throw new UserInputError(error.noProducerID);
       if (args.sex != "Male" && args.sex != "Female")
         throw new UserInputError(error.invalidBiodata);
       return await models.Producer.create(args);

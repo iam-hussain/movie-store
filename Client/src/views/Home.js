@@ -1,5 +1,5 @@
 import React, { Fragment, Component } from "react";
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 // reactstrap components
 import {
   Button,
@@ -23,21 +23,6 @@ export class Home extends Component {
     }
 }
 
-handleActorClick(e) {
-  e.preventDefault();
-  //browserHistory.push("/actor")
-}
-
-handleMovieClick(e) {
-  e.preventDefault();
-  //browserHistory.push("/movie")
-}
-
-handleProducerClick(e) {
-  e.preventDefault();
-  //browserHistory.push("/producer")
-}
-
   render() {
     return (
       <Fragment>
@@ -59,22 +44,14 @@ handleProducerClick(e) {
                           bollywood, hollywood, international & regional movies
                           online.
                         </p>
-                        <Button
-                          className="mt-4"
-                          color="primary"
-                          href="#pablo"
-                          onClick= {this.handleMovieClick}
+                        <Link
+                          className="mt-4 btn btn-primary"
+                          color="success"
+                          to = '/movie'
                         >
                           View all
-                        </Button>
-                        <Button
-                          className="mt-4"
-                          color="primary"
-                          href="#pablo"
-                          onClick={e => e.preventDefault()}
-                        >
-                          Add
-                        </Button>
+                         </Link>
+                        
                       </CardBody>
                     </Card>
                   </Col>
@@ -89,22 +66,14 @@ handleProducerClick(e) {
                           Explore complete collection of popular actors of
                           bollywood, hollywood, international.
                         </p>
-                        <Button
-                          className="mt-4"
+                        <Link
+                          className="mt-4 btn btn-success"
                           color="success"
-                          href="#pablo"
-                          onClick= {this.handleActorClick}
+                          to = '/actor'
                         >
                           View all
-                         </Button>
-                        <Button
-                          className="mt-4"
-                          color="success"
-                          href="#pablo"
-                          onClick={e => e.preventDefault()}
-                        >
-                          Add
-                        </Button>
+                         </Link>
+                       
                       </CardBody>
                     </Card>
                   </Col>
@@ -121,22 +90,15 @@ handleProducerClick(e) {
                           Explore complete collection of popular and rich
                           producer of bollywood, hollywood, international.
                         </p>
-                        <Button
-                          className="mt-4"
-                          color="warning"
-                          href="#pablo"
-                          onClick= {this.handleProducerClick}
+                        <Link
+                          className="mt-4 btn btn-warning"
+                          color="success"
+                          to = '/producer'
                         >
                           View all
-                         </Button>
-                        <Button
-                          className="mt-4"
-                          color="warning"
-                          href="#pablo"
-                          onClick={e => e.preventDefault()}
-                        >
-                          Add
-                        </Button>
+                         </Link>
+                        
+                      
                       </CardBody>
                     </Card>
                   </Col>
@@ -150,4 +112,4 @@ handleProducerClick(e) {
   }
 }
 
-export default Home;
+export default withRouter(Home);

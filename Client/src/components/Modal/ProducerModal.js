@@ -22,39 +22,106 @@ import {
   Modal
 } from "reactstrap";
 
+
+import withProducer from "../../Query/singleProducer";
+import withUpdateProducer from "../../Query/updateProducer";
+import withCreateProducer from "../../Query/createProducer";
+import withallMovie from '../../Query/allMovie'
+
+
 class ProducerModal extends Component {
   initialState = {
     id: this.props.Data ? this.props.Data.id : 0,
     name: this.props.Data ? this.props.Data.name : "",
     biodata: this.props.Data ? this.props.Data.biodata : "",
+    sex: this.props.Data ? this.props.Data.sex : 'Male',
     dob: this.props.Data
-      ? moment(new Date(this.props.Data.dob))
-      : moment(new Date())
+      ? moment(new Date(this.props.Data.dob)).format()
+      : moment(new Date()).format(),
+      errorText: ""
   };
 
   state = this.initialState;
-
-  handleSubmit = event => {
-    var self = this;
-    console.log(event, self);
-  };
 
   handleChange = event => {
     event.preventDefault();
     this.setState({
       [event.target.name]: event.target.value
     });
-    console.log(this.props);
   };
 
+  handleRadioChange = event =>{
+    console.log(event.target.value)
+    this.setState({
+      sex: event.target.name
+    });
+  }
+
   handleDateChange = data => {
+    console.log(this.state);
     this.setState({
       dob:
         data && data._isValid && data.toDate()
           ? moment(data.toDate())
-          : new Date()
+          : moment(new Date()).format("MM/DD/YYYY"),
+          errorText: data && !data._isValid ? "Invalid DOB (Default date : Current)" : ""
     });
   };
+
+  
+  componentDidUpdate(previousProps, previousState) {
+    if (
+      this.props.Data &&
+      (!previousProps.Data || previousProps.Data !== this.props.Data)
+    ) {
+      this.setState({
+        id: this.props.Data ? this.props.Data.id : 0,
+        name: this.props.Data ? this.props.Data.name : "",
+        biodata: this.props.Data ? this.props.Data.biodata : "",
+        dob: this.props.Data
+          ? moment(new Date(this.props.Data.dob)).format("MM/DD/YYYY")
+          : moment(new Date()).format("MM/DD/YYYY"),
+          errorText:""
+      });
+    }
+  }
+
+  
+  async handleData() {
+    try{
+    if (this.state.id !== 0) {
+      await this.props.update({
+        variables: {
+          id: Number(this.state.id),
+          name: this.state.name,
+          dob: this.state.dob,
+          biodata: this.state.biodata,
+          sex: this.state.sex
+        }
+      });
+      await this.props.refetch()
+    } else {
+      await this.props.create({
+        variables: {
+          name: this.state.name,
+          dob: this.state.dob,
+          biodata: this.state.biodata,
+          sex: this.state.sex
+        }
+      });
+      await this.props.refetch()
+    }
+
+    this.props.onClose({
+      modal: this.props.modal_name,
+      data_id: this.props.data_id
+    });
+  } catch (e) {
+    this.setState({
+      errorText: e.message
+    });
+  }
+  }
 
   render() {
     return (
@@ -64,18 +131,20 @@ class ProducerModal extends Component {
         isOpen={this.props.isOpen}
         toggle={() =>
           this.props.onClose({
-            modal: "produerModal",
+            modal: this.props.modal_name,
             data_id: this.props.data_id
           })
         }
       >
         <div className="modal-body p-0">
           <Card className="bg-secondary shadow border-0">
-            <CardBody className="px-lg-5 py-lg-5">
+          <CardBody className="px-lg-8 py-lg-8">
               <div className="text-center text-muted mb-4">
                 <b>{this.props.Text.header_text}</b>
+                <br />
+                <b className="text-danger">{this.state.errorText}</b>
               </div>
-              <Form role="form" onSubmit={this.handleSubmit}>
+              <Form role="form">
                 <FormGroup
                   className={classnames("mt-5", {
                     focused: this.state.nameFocused
@@ -93,6 +162,7 @@ class ProducerModal extends Component {
                       name="name"
                       onFocus={e => this.setState({ nameFocused: true })}
                       onBlur={e => this.setState({ nameFocused: false })}
+                      value={this.state.name}
                       onChange={this.handleChange}
                     />
                   </InputGroup>
@@ -110,6 +180,8 @@ class ProducerModal extends Component {
                         placeholder: "DOB"
                       }}
                       timeFormat={false}
+                      value={this.state.dob}
+                      onChange={data => this.handleDateChange(data)}
                     />
                   </InputGroup>
                 </FormGroup>
@@ -125,14 +197,15 @@ class ProducerModal extends Component {
                     <div className="custom-control custom-radio mr-3">
                       <input
                         className="custom-control-input"
-                        defaultChecked
-                        id="Male"
-                        name="male"
+                        id="male"
+                        name="Male"
                         type="radio"
+                        checked={this.state.sex === 'Male'? true : false} 
+                        onChange={data => this.handleRadioChange(data)}
                       />
                       <label
                         className="custom-control-label"
-                        htmlFor="Male"
+                        htmlFor="male"
                       >
                         <span>Male</span>
                       </label>
@@ -140,13 +213,15 @@ class ProducerModal extends Component {
                     <div className="custom-control custom-radio mr-3">
                       <input
                         className="custom-control-input"
-                        id="Female"
-                        name="female"
+                        id="female"
+                        name="Female"
+                        checked={this.state.sex === 'Female'? true : false}
                         type="radio"
+                        onChange={data => this.handleRadioChange(data)}
                       />
                       <label
                         className="custom-control-label"
-                        htmlFor="Female"
+                        htmlFor="female"
                       >
                         <span>Female</span>
                       </label>
@@ -171,6 +246,7 @@ class ProducerModal extends Component {
                     rows="4"
                     type="textarea"
                     onChange={this.handleChange}
+                    value={this.state.biodata}
                   />
                 </FormGroup>
                 <Button
@@ -192,4 +268,4 @@ class ProducerModal extends Component {
   }
 }
 
-export default ProducerModal;
+export default withallMovie(withCreateProducer(withUpdateProducer(withProducer(ProducerModal))));

@@ -2,8 +2,20 @@ import React, { Component } from "react";
 
 // reactstrap components
 import { Col, Card, Button } from "reactstrap";
+import withDeleteProducer from "../../Query/deleteProducer";
 
 class PersonCard extends Component {
+
+  
+  async handleDelete(myID) {
+    await this.props.delete({
+      variables: {
+        id: myID,
+      }
+    });
+    await this.props.refetch()
+  }
+
   render() {
     return (
       <>
@@ -15,11 +27,18 @@ class PersonCard extends Component {
                  {person.name}
                </h6>
                <ul className="list-unstyled mb-2">
-                 <li>
+               <li>
                    <small className="text-muted  text-uppercase "> DOB : {person.dob}</small>
-                 </li>
-                 <li>
+                  <br />
                    <small className="text-muted  text-uppercase "> Sex : {person.sex}</small>
+                   <br />
+                   
+                   <small className="text-muted  text-uppercase "> Movie : 
+                   {person && person.movie ? person.movie.map((moviesname, i) => (
+                     i !== 0 ? " || " + moviesname.name : moviesname.name  
+                   )) : <></>}
+                   </small>
+                   <br />
                  </li>
                </ul>
                <p className="description mt-0 lead text-italic text-white">
@@ -43,7 +62,7 @@ class PersonCard extends Component {
                  className="mt-1"
                  color={this.props.color}
                  href="#pablo"
-                 onClick={e => e.preventDefault()}
+                 onClick={() => this.handleDelete(person.id)}
                >
                  Delete
                </Button>
@@ -56,4 +75,4 @@ class PersonCard extends Component {
   }
 }
 
-export default PersonCard
+export default withDeleteProducer(PersonCard)
