@@ -25,7 +25,6 @@ const withActor = (Component) => {
         const { loading, error, data } = useQuery(GET_ONE_ACTOR, {
             variables: { id: Number(props.data_id) },
           })
-          console.log("data.singleActor =", data.singleActor)
         return (
             <Component
                 {...props}

@@ -27,6 +27,8 @@ import withProducer from "../../Query/singleProducer";
 import withUpdateProducer from "../../Query/updateProducer";
 import withCreateProducer from "../../Query/createProducer";
 import withallMovie from '../../Query/allMovie'
+import createRelation from "../../Query/createRelation";
+import deleteRelation from "../../Query/deleteRelation";
 
 
 class ProducerModal extends Component {
@@ -38,7 +40,8 @@ class ProducerModal extends Component {
     dob: this.props.Data
       ? moment(new Date(this.props.Data.dob)).format()
       : moment(new Date()).format(),
-      errorText: ""
+      errorText: "",
+      addRelation: []
   };
 
   state = this.initialState;
@@ -83,6 +86,25 @@ class ProducerModal extends Component {
           : moment(new Date()).format("MM/DD/YYYY"),
           errorText:""
       });
+      var allMovieFiltered = [];
+      if (this.props.movieData && this.props.movieData.allMovies) {
+        allMovieFiltered = this.props.movieData.allMovies.map(movie => {
+          if (this.props.Data.movie.find(selected => selected.id === movie.id)) {
+            return {
+              ...movie,
+              status: true
+            }
+          }
+          return {
+            ...movie,
+            status: false
+          }
+        })
+      }
+      this.setState({
+        movies: allMovieFiltered
+      })
+
     }
   }
 
@@ -99,7 +121,6 @@ class ProducerModal extends Component {
           sex: this.state.sex
         }
       });
-      await this.props.refetch()
     } else {
       await this.props.create({
         variables: {
@@ -109,8 +130,10 @@ class ProducerModal extends Component {
           sex: this.state.sex
         }
       });
-      await this.props.refetch()
+
     }
+
+    await this.props.refetch()
 
     this.props.onClose({
       modal: this.props.modal_name,
@@ -122,6 +145,9 @@ class ProducerModal extends Component {
     });
   }
   }
+
+  
+
 
   render() {
     return (
@@ -249,6 +275,10 @@ class ProducerModal extends Component {
                     value={this.state.biodata}
                   />
                 </FormGroup>
+
+                <div className="text-center text-muted mt-2 mb-2">
+                  <b>{this.props.Text.header_text}</b>
+                </div>
                 <Button
                   block
                   className="btn-round"
@@ -268,4 +298,4 @@ class ProducerModal extends Component {
   }
 }
 
-export default withallMovie(withCreateProducer(withUpdateProducer(withProducer(ProducerModal))));
+export default createRelation(deleteRelation(withallMovie(withCreateProducer(withUpdateProducer(withProducer(ProducerModal))))));

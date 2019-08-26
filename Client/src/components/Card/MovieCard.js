@@ -9,14 +9,13 @@ class MovieCard extends Component {
   async handleDelete(movieID) {
     await this.props.deleteMovie({
       variables: {
-        id: movieID,
+        id: movieID
       }
     });
-    await this.props.refetch()
+    await this.props.refetch();
   }
 
   render() {
-
     return (
       <>
         {this.props.movieData.map(movie => (
@@ -45,16 +44,21 @@ class MovieCard extends Component {
                   {movie.name}
                 </h6>
                 <small className="text-muted  text-uppercase">
-                  {" "}
-                  Producer : {movie.producer && movie.producer.name ? movie.producer.name : ""}
-                  <br />
-                  {" "}
-                  Year of release : {movie.year_of_release}
+                  Actors :
+                  {movie &&
+                    movie.actor.map((actorname, i) =>
+                      i !== 0 ? " || " + actorname.name : actorname.name
+                    )}
+                  <br /> Producer :{" "}
+                  {movie.producer && movie.producer.name
+                    ? movie.producer.name
+                    : ""}
+                  <br /> Year of release : {movie.year_of_release}
                 </small>
                 <p className="description mt-0 lead text-italic text-white">
                   {movie.plot}
                 </p>
-                
+
                 <Button
                   className="mt-1"
                   color={this.props.color}
@@ -68,8 +72,11 @@ class MovieCard extends Component {
                 >
                   Update
                 </Button>
-                <Button className="mt-1" href="#pablo" color={this.props.color}
-                onClick={() => this.handleDelete(movie.id)}
+                <Button
+                  className="mt-1"
+                  href="#pablo"
+                  color={this.props.color}
+                  onClick={() => this.handleDelete(movie.id)}
                 >
                   Delete
                 </Button>

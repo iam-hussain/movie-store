@@ -90,7 +90,20 @@ const resolvers = {
       if (!args.biodata) throw new UserInputError(error.noBiodata);
       if (args.sex != "Male" && args.sex != "Female")
         throw new UserInputError(error.invalidBiodata);
-      return await models.Actor.create(args);
+      var created =  await models.Actor.create(args);
+      console.log(args.addmovie, "==========createdcreatedcreatedcreatedcreatedcreatedcreated=====", created)
+    
+      const promises = args.addmovie.map(movie => {
+        return  models.ActorMovie.create({
+          actor_id: created.id,
+          movie_id: movie
+        });
+      })
+
+      await Promise.all(promises)
+
+      return created
+
     },
     updateActor: async (parent, args) => {
       if (!args.id) throw new UserInputError(error.noID);
@@ -126,9 +139,21 @@ const resolvers = {
       if (!args.name) throw new UserInputError(error.noName);
       if (!args.year_of_release) throw new UserInputError(error.noYear);
       if (!args.plot) throw new UserInputError(error.noPlot);
+      if (!args.producer_id || args.producer_id == 0) throw new UserInputError(error.noProducer);
       if (!args.year_of_release > 0)
         throw new UserInputError(error.invalidYear);
-      return await models.Movie.create(args);
+      var created =  await models.Movie.create(args);
+
+      const promises = args.addactor.map(actor => {
+        return  models.ActorMovie.create({
+          actor_id: actor,
+          movie_id: created.id
+        });
+      })
+
+      await Promise.all(promises)
+
+      return created
     },
     updateMovie: async (parent, args) => {
       if (!args.id) throw new UserInputError(error.noID);

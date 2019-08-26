@@ -53,6 +53,7 @@ const typeDefs = gql`
       sex: String!
       dob: String!
       biodata: String!
+      addmovie: [ID]
     ): Actor
     updateActor(
       id: ID!
@@ -67,6 +68,7 @@ const typeDefs = gql`
       year_of_release: String!
       plot: String!
       producer_id: ID!
+      addactor:[ID]
     ): Movie
     updateMovie(
       id: ID!

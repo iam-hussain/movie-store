@@ -13,6 +13,10 @@ const GET_ALL_MOVIE = gql`
             id
             name
         }
+        actor{
+            id
+            name
+        }
     }
   }
 `;

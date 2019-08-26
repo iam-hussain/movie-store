@@ -19,7 +19,8 @@ class Actor extends Component {
     data_id: 0,
     modal_text: {
       header_text: "Update Actor",
-      btn_text: "Update"
+      btn_text: "Update",
+      relation_text: "Selected Acted Movies"
     },
     hero_data: {
       text: "Create Actor",
@@ -38,7 +39,8 @@ class Actor extends Component {
     this.setState({
       modal_text: {
         header_text: data.data_id === 0 ? "Create Actor" : "Update Actor",
-        btn_text: data.data_id === 0 ? "Create" : "Update"
+        btn_text: data.data_id === 0 ? "Create" : "Update",
+        relation_text: "Selected Acted Movies"
       }
     });
   };

@@ -35,9 +35,9 @@ class ActorCard extends Component {
                    <br />
                    
                    <small className="text-muted  text-uppercase "> Movie : 
-                   {person && person.movie ? person.movie.map((moviesname, i) => (
+                   {person && person.movie && person.movie.map((moviesname, i) => (
                      i !== 0 ? " || " + moviesname.name : moviesname.name  
-                   )) : <></>}
+                   ))}
                    </small>
                    <br />
                  </li>

@@ -27,7 +27,10 @@ import ReactDatetime from "react-datetime";
 import withMovie from "../../Query/singleMovie";
 import withUpdateMovie from "../../Query/updateMovie";
 import withCreateMovie from "../../Query/createMovie";
-import withallProducers from '../../Query/allProducer'
+import withallProducers from '../../Query/allProducer';
+import withallActors from '../../Query/allActors';
+import createRelation from "../../Query/createRelation";
+import deleteRelation from "../../Query/deleteRelation";
 
 class MovieModal extends Component {
   initialState = {
@@ -53,6 +56,13 @@ class MovieModal extends Component {
 
   async handleData() {
     try{
+      var addActor = []
+      this.state.actors.map(oneActor => {
+        if(oneActor.status) {
+          addActor.push(Number(oneActor.id)) 
+        }
+        return null
+      })
     if (this.state.id !== 0) {
       await this.props.updateMovie({
         variables: {
@@ -63,18 +73,19 @@ class MovieModal extends Component {
           producer_id: Number(this.state.producer_id)
         } 
       });
-      await this.props.refetch()
     } else {
       await this.props.createMovie({
         variables: {
           name: this.state.name,
           year_of_release: this.state.year_of_release,
           plot: this.state.plot,
-          producer_id: Number(this.state.producer_id)
+          producer_id: Number(this.state.producer_id),
+          addactor: addActor
         }
       });
-      await this.props.refetch()
     }
+    
+    await this.props.refetch()
 
     this.props.onClose({
       modal: this.props.modal_name,
@@ -82,9 +93,6 @@ class MovieModal extends Component {
     });
 
   } catch (e) {
-    if(e.message === "GraphQL error: Cannot add or update a child row: a foreign key constraint fails (`moviestore`.`movie`, CONSTRAINT `movie_ibfk_1` FOREIGN KEY (`producer_id`) REFERENCES `producer` (`id`) ON DELETE SET NULL ON UPDATE CASCADE)"){
-      e.message = "Unknown Producer"
-    }
     this.setState({
       errorText: e.message
     });
@@ -127,11 +135,73 @@ class MovieModal extends Component {
           producer_id: this.props.Data && this.props.Data.producer ? this.props.Data.producer.id : 0,
           errorText:""
       });
+  
+    var allActorFiltered = [];
+      if (this.props.actorData && this.props.Data.actor) {
+        allActorFiltered = this.props.actorData.map(actor => {
+          if (
+            this.props.Data.actor.find(selected => selected.id === actor.id)
+          ) {
+            return {
+              ...actor,
+              status: true
+            };
+          }
+          return {
+            ...actor,
+            status: false
+          };
+        });
+      }
+      this.setState({
+        actors: allActorFiltered
+      });
     }
-
   }
+
+  
+  async handleRelation(actor, i) {
+    try {
+      if (this.state.id !== 0) {
+        if (this.state.actors[i].status) {
+          await this.props.deleteRelation({
+            variables: {
+              actor_id: actor,
+              movie_id: this.state.id
+            }
+          });
+        } else {
+          await this.props.createRelation({
+            variables: {
+              actor_id: actor,
+              movie_id: this.state.id
+            }
+          });
+        }
+        const updatedActors = [...this.state.actors];
+        updatedActors[i].status = !updatedActors[i].status;
+        this.setState({
+          actors: updatedActors
+        });
+        await this.props.refetch();
+      } else {
+        const updatedActors = [...this.state.actors];
+        updatedActors[i].status = !updatedActors[i].status;
+        this.setState({
+          actors: updatedActors
+        });
+      }
+    } catch (e) {
+      this.setState({
+        errorText: e.message
+      });
+    }
+  }
+
+
+
   render() {
-  //  console.log(this.props, " =====================================Modal");
+   console.log(this.props, " ============Movie*************8=========================Modal")
     return (
       <Modal
         className="modal-dialog-centered"
@@ -222,6 +292,35 @@ class MovieModal extends Component {
                     </DropdownMenu>
                   </Dropdown>
                 </FormGroup>
+
+                <div className="text-center text-muted mt-2 mb-2">
+                  <b>{this.props.Text.relation_text}</b>
+                </div>
+                <FormGroup className="mb-2">
+                  {this.state.actors &&
+                    this.state.actors.map((actor, i) => (
+                      <div
+                        key={actor.id}
+                        className="custom-control custom-checkbox mb-3 mr-2"
+                      >
+                        <input
+                          name={"checkBox" + actor.id}
+                          id={"check" + actor.id}
+                          className="custom-control-input"
+                          type="checkbox"
+                          checked={actor.status}
+                          onChange={e => this.handleRelation(actor.id, i)}
+                        />
+                        <label
+                          className="custom-control-label"
+                          htmlFor={"check" + actor.id}
+                        >
+                          <span>{actor.name}</span>
+                        </label>
+                      </div>
+                    ))}
+                </FormGroup>
+
                 <Button
                   block
                   className="btn-round"
@@ -241,4 +340,4 @@ class MovieModal extends Component {
   }
 }
 
-export default withallProducers(withMovie(withUpdateMovie(withCreateMovie(MovieModal))));
+export default createRelation(deleteRelation(withallActors(withallProducers(withMovie(withUpdateMovie(withCreateMovie(MovieModal)))))));

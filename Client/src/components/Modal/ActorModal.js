@@ -22,6 +22,8 @@ import withActor from "../../Query/singleActor";
 import withUpdateActor from "../../Query/updateActor";
 import withCreateActor from "../../Query/createActor";
 import withallMovie from "../../Query/allMovie";
+import createRelation from "../../Query/createRelation";
+import deleteRelation from "../../Query/deleteRelation";
 
 class ActorModal extends Component {
   initialState = {
@@ -74,11 +76,38 @@ class ActorModal extends Component {
           : moment(new Date()).format("MM/DD/YYYY"),
         errorText: ""
       });
+      var allMovieFiltered = [];
+      if (this.props.movieData && this.props.movieData.allMovies) {
+        allMovieFiltered = this.props.movieData.allMovies.map(movie => {
+          if (
+            this.props.Data.movie.find(selected => selected.id === movie.id)
+          ) {
+            return {
+              ...movie,
+              status: true
+            };
+          }
+          return {
+            ...movie,
+            status: false
+          };
+        });
+      }
+      this.setState({
+        movies: allMovieFiltered
+      });
     }
   }
 
   async handleData() {
     try {
+      var addMovie = []
+      this.state.movies.map(oneMovie => {
+        if(oneMovie.status) {
+         addMovie.push(Number(oneMovie.id)) 
+        }
+        return null
+      })
       if (this.state.id !== 0) {
         await this.props.update({
           variables: {
@@ -89,18 +118,19 @@ class ActorModal extends Component {
             sex: this.state.sex
           }
         });
-        await this.props.refetch();
       } else {
         await this.props.create({
           variables: {
             name: this.state.name,
             dob: this.state.dob,
             biodata: this.state.biodata,
-            sex: this.state.sex
+            sex: this.state.sex,
+            addmovie: addMovie
           }
         });
-        await this.props.refetch();
+        
       }
+      await this.props.refetch();
 
       this.props.onClose({
         modal: this.props.modal_name,
@@ -113,8 +143,48 @@ class ActorModal extends Component {
     }
   }
 
+  async handleRelation(movie, i) {
+    try {
+      if (this.state.id !== 0) {
+        if (this.state.movies[i].status) {
+          await this.props.deleteRelation({
+            variables: {
+              actor_id: this.state.id,
+              movie_id: movie
+            }
+          });
+        } else {
+          await this.props.createRelation({
+            variables: {
+              actor_id: this.state.id,
+              movie_id: movie
+            }
+          });
+        }
+        const updatedMovies = [...this.state.movies];
+
+        updatedMovies[i].status = !updatedMovies[i].status;
+        this.setState({
+          movies: updatedMovies
+        });
+        await this.props.refetch();
+      } else {
+        const updatedMovies = [...this.state.movies];
+
+        updatedMovies[i].status = !updatedMovies[i].status;
+        this.setState({
+          movies: updatedMovies
+        });
+      }
+    } catch (e) {
+      this.setState({
+        errorText: e.message
+      });
+    }
+  }
+
   render() {
-    console.log(this.props)
+    console.log(this.props);
     return (
       <Modal
         className="modal-dialogn-centered"
@@ -237,27 +307,31 @@ class ActorModal extends Component {
                 </FormGroup>
 
                 <div className="text-center text-muted mt-2 mb-2">
-                  <b>{this.props.Text.header_text}</b>
+                  <b>{this.props.Text.relation_text}</b>
                 </div>
-                <FormGroup className='mb-2'>
-
-                {this.props.movieData && this.props.movieData.allMovies ? this.props.movieData.allMovies.map(allmovie => (
-                      
-                  <div key={allmovie.id} className="custom-control custom-checkbox mb-3 mr-2">
-                    <input
-                      className="custom-control-input"
-                      id={"check" + allmovie.id}
-                      type="checkbox"
-                    />
-                    <label
-                      className="custom-control-label"
-                      htmlFor={"check" + allmovie.id}
-                    >
-                      <span>{allmovie.name}</span>
-                    </label>
-                  </div>
-
-                )): ""}
+                <FormGroup className="mb-2">
+                  {this.state.movies &&
+                    this.state.movies.map((movie, i) => (
+                      <div
+                        key={movie.id}
+                        className="custom-control custom-checkbox mb-3 mr-2"
+                      >
+                        <input
+                          name={"checkBox" + movie.id}
+                          id={"check" + movie.id}
+                          className="custom-control-input"
+                          type="checkbox"
+                          checked={movie.status}
+                          onChange={e => this.handleRelation(movie.id, i)}
+                        />
+                        <label
+                          className="custom-control-label"
+                          htmlFor={"check" + movie.id}
+                        >
+                          <span>{movie.name}</span>
+                        </label>
+                      </div>
+                    ))}
                 </FormGroup>
 
                 <Button
@@ -279,6 +353,8 @@ class ActorModal extends Component {
   }
 }
 
-export default withallMovie(
-  withCreateActor(withUpdateActor(withActor(ActorModal)))
+export default createRelation(
+  deleteRelation(
+    withallMovie(withCreateActor(withUpdateActor(withActor(ActorModal))))
+  )
 );

@@ -21,7 +21,8 @@ class Movie extends Component {
     data_id: 0,
     modal_text: {
       header_text: "Update Movie",
-      btn_text: "Update"
+      btn_text: "Update",
+      relation_text: "Select Cast"
     },
     hero_data: {
       text: "Create Movie",
@@ -38,7 +39,8 @@ class Movie extends Component {
     this.setState({
       modal_text: {
         header_text: data.data_id === 0 ? "Create Movie" : "Update Movie",
-        btn_text: data.data_id === 0 ? "Create" : "Update"
+        btn_text: data.data_id === 0 ? "Create" : "Update",
+        relation_text: "Select Cast"
       }
     });
   };

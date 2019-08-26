@@ -11,4 +11,5 @@ export const error = {
     noMovieID : "Movie ID not found !",
     noActorID : "Actor ID not found !",
     noProducerID : "Producer ID not found !",
+    noProducer : "Producer not selected !",
   };

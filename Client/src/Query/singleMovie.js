@@ -15,6 +15,10 @@ const GET_ONE_MOVIE = gql`
             id
             name
         }
+        actor{
+            id
+            name
+        }
     }
   }
 `;
@@ -33,6 +37,7 @@ const withMovie = (Component) => {
                   name: "",
                   plot: "",
                   year_of_release: moment(new Date()).format("YYYY"),
+                  actor:[]
                 }}
                 Loading={loading}
                 Error={error}
