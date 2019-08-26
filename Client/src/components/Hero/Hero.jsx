@@ -1,20 +1,17 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 
 // reactstrap components
-import {
-  Container,
-  Row,
-  Col,
-} from "reactstrap";
+import { Container, Row, Col, Button } from "reactstrap";
 
 class Hero extends Component {
+  state = {};
 
   movierouteChange() {
-    let path = `newPath`;
-    this.props.history.push('/movies');
+    this.props.history.push("/movies");
   }
 
   render() {
+    let { hero_content } = this.props;
     return (
       <>
         <div className="position-relative">
@@ -36,16 +33,32 @@ class Hero extends Component {
                 <Row>
                   <Col lg="6">
                     <h1 className="display-3 text-white">
-                      Movie Store{" "}
-                      <span>The world's most popular and source for movie</span>
+                      {hero_content.title} <span>{hero_content.slog}</span>
                     </h1>
-                    <p className="lead text-white">
-                      IMDb is an online database of information related to
-                      films, television programs, home videos, video games, and
-                      streaming content online – including cast, production crew
-                      and personal biographies, plot summaries, trivia, fan and
-                      critical reviews, and ratings.
-                    </p>
+                    <p className="lead text-white">{hero_content.describe}</p>
+                    {this.props.hero_data ? (
+                      <div className="btn-wrapper">
+                        <Button
+                          className="btn-icon mb-3 mb-sm-0 ml-1"
+                          color={this.props.hero_data.color}
+                          onClick={() =>
+                            this.props.onOpen({
+                              modal: this.props.hero_data.modal_name,
+                              data_id: 0
+                            })
+                          }
+                        >
+                          <span className="btn-inner--icon mr-1">
+                            <i className="ni ni-fat-add" />
+                          </span>
+                          <span className="btn-inner--text">
+                            {this.props.hero_data.text}
+                          </span>
+                        </Button>
+                      </div>
+                    ) : (
+                      <></>
+                    )}
                   </Col>
                 </Row>
               </div>

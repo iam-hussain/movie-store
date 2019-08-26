@@ -7,11 +7,6 @@ import Headroom from "headroom.js";
 // reactstrap components
 import {
   UncontrolledCollapse,
-  DropdownMenu,
-  DropdownItem,
-  DropdownToggle,
-  UncontrolledDropdown,
-  Media,
   NavbarBrand,
   Navbar,
   NavItem,
@@ -68,36 +63,55 @@ class MainNavbar extends React.Component {
                   </Row>
                 </div>
                 <Nav className="align-items-lg-center ml-lg-auto" navbar>
-                  <NavItem>
+                <NavItem>
                     <NavLink
                       className="nav-link-icon"
-                      href="/movie"
+                      href="/"
                       id="tooltipMovies"
-                    >Movies
-                      
+                    >
+                      Home
                     </NavLink>
                     <UncontrolledTooltip delay={0} target="tooltipMovies">
                       See all the latest movies
                     </UncontrolledTooltip>
                   </NavItem>
                   <NavItem>
-                    <NavLink className="nav-link-icon" href="/actor" id="tooltipActors">
-                       Actors
+                    <NavLink
+                      className="nav-link-icon"
+                      href="/movie"
+                      id="tooltipMovies"
+                    >
+                      Movies
+                    </NavLink>
+                    <UncontrolledTooltip delay={0} target="tooltipMovies">
+                      See all the latest movies
+                    </UncontrolledTooltip>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink
+                      className="nav-link-icon"
+                      href="/actor"
+                      id="tooltipActors"
+                    >
+                      Actors
                     </NavLink>
                     <UncontrolledTooltip delay={0} target="tooltipActors">
-                    See all the movies actors
+                      See all the movies actors
                     </UncontrolledTooltip>
                   </NavItem>
 
                   <NavItem>
-                    <NavLink className="nav-link-icon" href="/producer" id="tooltipProducer">
-                       Producer
+                    <NavLink
+                      className="nav-link-icon"
+                      href="/producer"
+                      id="tooltipProducer"
+                    >
+                      Producer
                     </NavLink>
                     <UncontrolledTooltip delay={0} target="tooltipProducer">
-                    See all the movies producer
+                      See all the movies producer
                     </UncontrolledTooltip>
                   </NavItem>
-
                 </Nav>
               </UncontrolledCollapse>
             </Container>

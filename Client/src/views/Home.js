@@ -16,9 +16,10 @@ import Hero from "../components/Hero/Hero";
 
 export class Home extends Component {
   state = {
-    actor : {
-      title : "Movies",
-      description : "Explore complete collection of popular and blockbuster bollywood, hollywood, international & regional movies online."
+    hero_content : {
+      title : "Movie Store",
+      slog: "The world's most popular and source for movie",
+      describe: "IMDb is an online database of information related to films, television programs, home videos, video games, and streaming content online – including cast, production crew and personal biographies, plot summaries, trivia, fan and critical reviews, and ratings."
     }
 }
 
@@ -40,7 +41,7 @@ handleProducerClick(e) {
   render() {
     return (
       <Fragment>
-        <Hero />
+        <Hero hero_content={this.state.hero_content}/>
         <section className="section section-lg pt-lg-0 mt--200">
           <Container>
             <Row className="justify-content-center">

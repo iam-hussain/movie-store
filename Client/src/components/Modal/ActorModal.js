@@ -1,11 +1,12 @@
 import React, { Component } from "react";
+
 // nodejs library that concatenates classes
 import classnames from "classnames";
 
+import moment from "moment";
 
 // react plugin used to create datetimepicker
 import ReactDatetime from "react-datetime";
-
 
 // reactstrap components
 import {
@@ -13,27 +14,68 @@ import {
   Card,
   CardBody,
   FormGroup,
+  Form,
   Input,
   InputGroupAddon,
   InputGroupText,
   InputGroup,
-  Col
+  Modal
 } from "reactstrap";
 
 
-export default class MovieFrom extends Component {
-    state ={}
+class ActorModal extends Component {
+  initialState = {
+    id: this.props.Data ? this.props.Data.id : 0,
+    name: this.props.Data ? this.props.Data.name : "",
+    biodata: this.props.Data ? this.props.Data.biodata : "",
+    dob: this.props.Data
+      ? moment(new Date(this.props.Data.dob))
+      : moment(new Date()),
+  };
+  
+  state = this.initialState
+  
+  handleSubmit = event => {
+    var self = this;
+    console.log(event, self)
+  };
+
+   handleChange = event => {
+    event.preventDefault();
+    this.setState({
+      [event.target.name]: event.target.value
+    });
+    console.log(this.props)
+  };
+
+  handleDateChange = data => {
+    this.setState({
+      dob: data && data._isValid && data.toDate() ? moment(data.toDate()) : new Date()
+    });
+  };
+
   render() {
+    console.log(this.props)
     return (
-        <Col lg="8">
-        <Card className="bg-gradient-secondary shadow">
-          <CardBody className="p-lg-5">
-            <h4 className="mb-1">Want to create new actor?</h4>
-            <p className="mt-0">
-              Just fill and submit the form
-            </p>
-            
-            <FormGroup
+      <Modal
+        className="modal-dialog-centered"
+        size="sm"
+        isOpen={this.props.isOpen}
+        toggle={() =>
+          this.props.onClose({
+            modal: "actorModal",
+            data_id: this.props.data_id
+          })
+        }
+      >
+        <div className="modal-body p-0">
+          <Card className="bg-secondary shadow border-0">
+            <CardBody className="px-lg-5 py-lg-5">
+            <div className="text-center text-muted mb-4">
+                <b>{this.props.Text.header_text}</b>
+              </div>
+              <Form role="form" onSubmit={this.handleSubmit}>
+              <FormGroup
               className={classnames("mt-5", {
                 focused: this.state.nameFocused
               })}
@@ -121,20 +163,23 @@ export default class MovieFrom extends Component {
                 type="textarea"
               />
             </FormGroup>
-            <div>
-              <Button
-                block
-                className="btn-round"
-                color="default"
-                size="lg"
-                type="button"
-              >
-                Save
-              </Button>
-            </div>
-          </CardBody>
-        </Card>
-      </Col>
+            <Button
+                  block
+                  className="btn-round"
+                  color="default"
+                  size="lg"
+                  type="button"
+                  onClick={() => this.handleData()}
+                >
+                  {this.props.Text.btn_text}
+                </Button>
+              </Form>
+            </CardBody>
+          </Card>
+        </div>
+      </Modal>
     );
   }
 }
+
+export default ActorModal;

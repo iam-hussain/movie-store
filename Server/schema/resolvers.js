@@ -36,7 +36,7 @@ const resolvers = {
       return oneMovie.Actor;
     },
     producer: async (parent, args) =>
-      await models.Producer.findAll({
+      await models.Producer.findOne({
         where: {
           id: parent.producer_id
         }
