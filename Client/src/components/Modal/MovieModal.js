@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import config from "../../config/config";
+import axios from "axios";
 import moment from "moment";
 // nodejs library that concatenates classes
 import classnames from "classnames";
@@ -27,8 +29,8 @@ import ReactDatetime from "react-datetime";
 import withMovie from "../../Query/singleMovie";
 import withUpdateMovie from "../../Query/updateMovie";
 import withCreateMovie from "../../Query/createMovie";
-import withallProducers from '../../Query/allProducer';
-import withallActors from '../../Query/allActors';
+import withallProducers from "../../Query/allProducer";
+import withallActors from "../../Query/allActors";
 import createRelation from "../../Query/createRelation";
 import deleteRelation from "../../Query/deleteRelation";
 
@@ -37,6 +39,7 @@ class MovieModal extends Component {
     id: this.props.Data ? this.props.Data.id : 0,
     name: this.props.Data ? this.props.Data.name : "",
     plot: this.props.Data ? this.props.Data.plot : "",
+    poster: this.props.Data ? this.props.Data.poster : "",
     year_of_release: this.props.Data
       ? this.props.Data.year_of_release
       : moment(new Date()).format("YYYY"),
@@ -53,57 +56,100 @@ class MovieModal extends Component {
       dropdownOpen: !prevState.dropdownOpen
     }));
   }
+  async updateMovie() {
+    await this.props.updateMovie({
+      variables: {
+        id: Number(this.state.id),
+        name: this.state.name,
+        year_of_release: this.state.year_of_release,
+        plot: this.state.plot,
+        poster: this.state.poster,
+        producer_id: Number(this.state.producer_id)
+      }
+    });
+  }
 
-  async handleData() {
-    try{
-      var addActor = []
-      this.state.actors.map(oneActor => {
-        if(oneActor.status) {
-          addActor.push(Number(oneActor.id)) 
-        }
-        return null
-      })
-    if (this.state.id !== 0) {
-      await this.props.updateMovie({
-        variables: {
-          id: Number(this.state.id),
-          name: this.state.name,
-          year_of_release: this.state.year_of_release,
-          plot: this.state.plot,
-          producer_id: Number(this.state.producer_id)
-        } 
-      });
-    } else {
-      await this.props.createMovie({
-        variables: {
-          name: this.state.name,
-          year_of_release: this.state.year_of_release,
-          plot: this.state.plot,
-          producer_id: Number(this.state.producer_id),
-          addactor: addActor
-        }
-      });
-    }
-    
-    await this.props.refetch()
+  async onSucess() {
+    await this.props.refetch();
 
     this.props.onClose({
       modal: this.props.modal_name,
       data_id: this.props.data_id
     });
-
-  } catch (e) {
-    this.setState({
-      errorText: e.message
-    });
   }
+
+  async handleData() {
+    try {
+      if(this.props.producersData && !this.props.producersData.allProducers.length) throw Error("To create movie you need to create producer first")
+      var addActor = [];
+      this.state.actors.map(oneActor => {
+        if (oneActor.status) {
+          addActor.push(Number(oneActor.id));
+        }
+        return null;
+      });
+
+      if (this.state.id !== 0) {
+        if (this.state.poster_file) {
+          const data = new FormData();
+          data.append(config.file_name, this.state.poster_file);
+          await axios.post(config.uploadURL, data, {}).then(async res => {
+            if(res && res.data && res.data.data && res.data.data.filename){
+              await this.setState({
+                poster: res.data.data.filename
+              });
+            }else{
+              throw Error("Poster image upload error")
+            }
+          });
+        }
+        await this.updateMovie();
+      } else {
+        if (this.state.poster_file) {
+          const data = new FormData();
+          data.append(config.file_name, this.state.poster_file);
+          await axios.post(config.uploadURL, data, {}).then(async res => {
+            if(res && res.data && res.data.data && res.data.data.filename){
+              await this.setState({
+                poster: res.data.data.filename
+              });
+            }else{
+              throw Error("Poster image upload error")
+            }
+          });
+        }
+        await this.props.createMovie({
+          variables: {
+            name: this.state.name,
+            year_of_release: this.state.year_of_release,
+            plot: this.state.plot,
+            poster: this.state.poster,
+            producer_id: Number(this.state.producer_id),
+            addactor: addActor
+          }
+        });
+      }
+      await this.onSucess();
+    } catch (e) {
+      this.setState({
+        errorText: e.message
+      });
+    }
+  }
+
+  async handleFileChange(e) {
+    e.preventDefault();
+    this.setState({
+      poster_file: e.target.files[0],
+      poster: ""
+    });
   }
 
   changeValue(e) {
     this.setState({
-        dropDownValue: e.currentTarget.textContent,
-        producer_id: e.currentTarget.value
-    })
+      dropDownValue: e.currentTarget.textContent,
+      producer_id: e.currentTarget.value
+    });
   }
 
   handleChange = event => {
@@ -115,7 +161,10 @@ class MovieModal extends Component {
 
   handleDateChange = data => {
     this.setState({
-      year_of_release: data && data._isValid && data.toDate() ? moment(data.toDate()).format("YYYY") : new Date()
+      year_of_release:
+        data && data._isValid && data.toDate()
+          ? moment(data.toDate()).format("YYYY")
+          : new Date()
     });
   };
 
@@ -128,15 +177,22 @@ class MovieModal extends Component {
         id: this.props.Data ? this.props.Data.id : 0,
         name: this.props.Data ? this.props.Data.name : "",
         plot: this.props.Data ? this.props.Data.plot : "",
+        poster: this.props.Data ? this.props.Data.poster : "",
         year_of_release: this.props.Data
           ? String(this.props.Data.year_of_release)
           : moment(new Date()).format("YYYY"),
-          dropDownValue: this.props.Data && this.props.Data.producer ? this.props.Data.producer.name : "Select Producer",
-          producer_id: this.props.Data && this.props.Data.producer ? this.props.Data.producer.id : 0,
-          errorText:""
+        dropDownValue:
+          this.props.Data && this.props.Data.producer && this.props.producersData.allProducers.length
+            ? this.props.Data.producer.name
+            : "Select Producer",
+        producer_id:
+          this.props.Data && this.props.Data.producer 
+            ? this.props.Data.producer.id
+            : 0,
+        errorText: ""
       });
-  
-    var allActorFiltered = [];
+
+      var allActorFiltered = [];
       if (this.props.actorData && this.props.Data.actor) {
         allActorFiltered = this.props.actorData.map(actor => {
           if (
@@ -159,7 +215,6 @@ class MovieModal extends Component {
     }
   }
 
-  
   async handleRelation(actor, i) {
     try {
       if (this.state.id !== 0) {
@@ -198,10 +253,7 @@ class MovieModal extends Component {
     }
   }
 
-
-
   render() {
-   console.log(this.props, " ============Movie*************8=========================Modal")
     return (
       <Modal
         className="modal-dialog-centered"
@@ -278,17 +330,35 @@ class MovieModal extends Component {
                     onChange={this.handleChange}
                   />
                 </FormGroup>
+                <FormGroup>
+                  <Input
+                    type="file"
+                    required
+                    onChange={e => this.handleFileChange(e)}
+                  />
+                </FormGroup>
 
-                <FormGroup className="mb-4">
+                <FormGroup className="mb-4 text-center ">
                   <Dropdown
                     isOpen={this.state.dropdownOpen}
-                    toggle={(e) => this.toggle(e)}
+                    toggle={e => this.toggle(e)}
                   >
-                    <DropdownToggle caret>{this.state.dropDownValue}</DropdownToggle>
+                    <DropdownToggle caret>
+                      {this.state.dropDownValue}
+                    </DropdownToggle>
                     <DropdownMenu>
-                    {this.props.producersData && this.props.producersData.allProducers ? this.props.producersData.allProducers.map(producer => (
-                      <DropdownItem onClick={(e) => this.changeValue(e)} value={producer.id} key={producer.id}>{producer.name}</DropdownItem>
-                    )): ""};
+                      {this.props.producersData && this.props.producersData.allProducers ? this.props.producersData.allProducers.map(
+                            producer => (
+                              <DropdownItem
+                                onClick={e => this.changeValue(e)}
+                                value={producer.id}
+                                key={producer.id}
+                              >
+                                {producer.name}
+                              </DropdownItem>
+                            )
+                          ): ""}
+                      
                     </DropdownMenu>
                   </Dropdown>
                 </FormGroup>
@@ -297,7 +367,7 @@ class MovieModal extends Component {
                   <b>{this.props.Text.relation_text}</b>
                 </div>
                 <FormGroup className="mb-2">
-                  {this.state.actors &&
+                  {this.state.actors && this.state.actors.length ?
                     this.state.actors.map((actor, i) => (
                       <div
                         key={actor.id}
@@ -318,7 +388,7 @@ class MovieModal extends Component {
                           <span>{actor.name}</span>
                         </label>
                       </div>
-                    ))}
+                    )): <div className="text-center ">No actor found !</div>}
                 </FormGroup>
 
                 <Button
@@ -340,4 +410,10 @@ class MovieModal extends Component {
   }
 }
 
-export default createRelation(deleteRelation(withallActors(withallProducers(withMovie(withUpdateMovie(withCreateMovie(MovieModal)))))));
+export default createRelation(
+  deleteRelation(
+    withallActors(
+      withallProducers(withMovie(withUpdateMovie(withCreateMovie(MovieModal))))
+    )
+  )
+);

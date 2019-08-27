@@ -3,11 +3,12 @@ import { useMutation } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 
 const CREATE_MOVIE = gql`
-  mutation CreateMovie($name:String!, $year_of_release:String!, $plot:String!, $producer_id:ID!, $addactor:[ID]) {
-    createMovie(name:$name,year_of_release:$year_of_release,plot:$plot, producer_id:$producer_id, addactor:$addactor){
+  mutation CreateMovie($name:String!, $year_of_release:String!, $plot:String!, $poster:String!, $producer_id:ID!, $addactor:[ID]) {
+    createMovie(name:$name,year_of_release:$year_of_release,plot:$plot, poster:$poster, producer_id:$producer_id, addactor:$addactor){
         id
         name
         year_of_release
+        poster
         plot
     }
   }

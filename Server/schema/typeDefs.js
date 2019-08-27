@@ -18,6 +18,7 @@ const typeDefs = gql`
     name: String!
     year_of_release: Int!
     plot: String!
+    poster: String!
     producer: Producer
     actor: [Actor]
   }
@@ -67,6 +68,7 @@ const typeDefs = gql`
       name: String!
       year_of_release: String!
       plot: String!
+      poster: String!
       producer_id: ID!
       addactor:[ID]
     ): Movie
@@ -75,6 +77,7 @@ const typeDefs = gql`
       name: String
       year_of_release: String
       plot: String
+      poster: String
       producer_id: ID
     ): Movie
     deleteMovie(id: ID!): [Movie]

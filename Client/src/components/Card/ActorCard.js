@@ -17,7 +17,6 @@ class ActorCard extends Component {
   }
 
   render() {
-    console.log("==============this.props.personData=============", this.props)
     return (
       <>
         {this.props.personData.map(person => (

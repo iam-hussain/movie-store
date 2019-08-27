@@ -4,8 +4,8 @@
   "description": "This is the backend of the movie store",
   "main": "index.js",
   "scripts": {
-    "start" : "node index",
-    "dev" : "nodemon index",
+    "start": "node index",
+    "dev": "nodemon index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -19,11 +19,15 @@
     "apollo-server-express": "^2.8.2",
     "babel-preset-es2015": "^6.24.1",
     "babel-register": "^6.26.0",
+    "body-parser": "^1.19.0",
+    "connect-flash": "^0.1.1",
+    "cors": "^2.8.5",
     "debug": "^4.1.1",
     "express": "^4.17.1",
     "graphql": "^14.4.2",
     "http": "0.0.0",
     "moment": "^2.24.0",
+    "multer": "^1.4.2",
     "mysql2": "^1.6.5",
     "sequelize": "^5.15.1"
   }

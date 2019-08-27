@@ -54,14 +54,12 @@ class ProducerModal extends Component {
   };
 
   handleRadioChange = event =>{
-    console.log(event.target.value)
     this.setState({
       sex: event.target.name
     });
   }
 
   handleDateChange = data => {
-    console.log(this.state);
     this.setState({
       dob:
         data && data._isValid && data.toDate()

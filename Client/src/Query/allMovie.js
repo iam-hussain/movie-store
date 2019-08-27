@@ -9,6 +9,7 @@ const GET_ALL_MOVIE = gql`
         name
         year_of_release
         plot
+        poster
         producer{
             id
             name

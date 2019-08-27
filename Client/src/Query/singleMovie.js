@@ -11,6 +11,7 @@ const GET_ONE_MOVIE = gql`
         name
         year_of_release
         plot
+        poster
         producer{
             id
             name
@@ -28,7 +29,6 @@ const withMovie = (Component) => {
         const { loading, error, data } = useQuery(GET_ONE_MOVIE, {
             variables: { id: Number(props.data_id) },
           })
-          console.log(" ============withMoviewithMovie====================================", loading, data)
         return (
             <Component
                 {...props}
@@ -37,7 +37,9 @@ const withMovie = (Component) => {
                   name: "",
                   plot: "",
                   year_of_release: moment(new Date()).format("YYYY"),
-                  actor:[]
+                  poster: "",
+                  actor:[],
+                  producer:0
                 }}
                 Loading={loading}
                 Error={error}

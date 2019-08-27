@@ -31,7 +31,6 @@ class Actor extends Component {
 
   
   updateModalState = data => {
-    console.log(data, " ==========================data,,,,,,,,,,,,,,")
     this.setState({
       [data.modal]: !this.state[data.modal],
       data_id: data.data_id

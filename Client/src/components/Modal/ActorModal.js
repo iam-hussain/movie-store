@@ -45,7 +45,6 @@ class ActorModal extends Component {
   };
 
   handleRadioChange = event => {
-    console.log(event.target.value);
     this.setState({
       sex: event.target.name
     });
@@ -184,7 +183,6 @@ class ActorModal extends Component {
   }
 
   render() {
-    console.log(this.props);
     return (
       <Modal
         className="modal-dialogn-centered"
@@ -310,7 +308,7 @@ class ActorModal extends Component {
                   <b>{this.props.Text.relation_text}</b>
                 </div>
                 <FormGroup className="mb-2">
-                  {this.state.movies &&
+                  {this.state.movies && this.state.movies.length ?
                     this.state.movies.map((movie, i) => (
                       <div
                         key={movie.id}
@@ -331,7 +329,7 @@ class ActorModal extends Component {
                           <span>{movie.name}</span>
                         </label>
                       </div>
-                    ))}
+                    )): <div className="text-center ">No movies found !</div>}
                 </FormGroup>
 
                 <Button

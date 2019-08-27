@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import config from "../../config/config";
+
 // reactstrap components
 import { Col, Card, CardImg, Button } from "reactstrap";
 import withDeleteMovie from "../../Query/deleteMovie";
@@ -23,7 +25,8 @@ class MovieCard extends Component {
             <Card className="card-lift--hover bg-default shadow border-0">
               <CardImg
                 alt="..."
-                src={require("../../assets/img/theme/img-1-1200x1000.jpg")}
+                src={new URL(config.server + movie.poster)}
+                onError={(e)=>{e.target.onerror = null; e.target.src=require("../../assets/img/theme/notFound.png")}}
                 top
               />
               <blockquote className="card-blockquote">

@@ -46,6 +46,7 @@ const CheckRoutes = props => (
 class App extends Component {
   state = {};
   render() {
+  
     return (
       <Fragment>
         <Navbar />

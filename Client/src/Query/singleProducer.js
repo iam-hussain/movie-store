@@ -25,7 +25,6 @@ const withProducer = (Component) => {
         const { loading, error, data } = useQuery(GET_ONE_PRODUCER, {
             variables: { id: Number(props.data_id) },
           })
-          console.log("data.singleProducer", data.singleProducer)
         return (
             <Component
                 {...props}

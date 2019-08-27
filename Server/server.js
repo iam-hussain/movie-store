@@ -7,9 +7,28 @@ import { ApolloServer } from "apollo-server-express";
 import typeDefs from "./schema/typeDefs";
 import resolvers from "./schema/resolvers";
 
+var bodyParser = require("body-parser");
+var flash = require('connect-flash');
+var cors = require('cors');
+
 var app = express();
 
+app.use(flash());
+app.use(cors())
+
+app.use(bodyParser.json({
+  limit: '50mb'
+}));
+app.use(bodyParser.urlencoded({
+  limit: '50mb',
+  extended: true
+}));
+
 app.use("/", express.static(__dirname + "/uploads"));
+
+var uploadRoutes = require('./routes/upload');
+app.use('/upload', uploadRoutes);
+
 
 const server = new ApolloServer({
   typeDefs,
@@ -19,6 +38,7 @@ const server = new ApolloServer({
 server.applyMiddleware({
   app
 });
+
 
 models.sequelize
   .sync()

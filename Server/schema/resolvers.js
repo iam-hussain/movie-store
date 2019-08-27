@@ -2,6 +2,8 @@ import { UserInputError, ValidationError } from "apollo-server-express";
 
 import { error } from "../helper/error-messages";
 import models from "../models/index";
+const fs = require("fs");
+
 
 const resolvers = {
   Actor: {
@@ -91,17 +93,13 @@ const resolvers = {
       if (args.sex != "Male" && args.sex != "Female")
         throw new UserInputError(error.invalidBiodata);
       var created =  await models.Actor.create(args);
-      console.log(args.addmovie, "==========createdcreatedcreatedcreatedcreatedcreatedcreated=====", created)
-    
       const promises = args.addmovie.map(movie => {
         return  models.ActorMovie.create({
           actor_id: created.id,
           movie_id: movie
         });
       })
-
       await Promise.all(promises)
-
       return created
 
     },
@@ -109,7 +107,6 @@ const resolvers = {
       if (!args.id) throw new UserInputError(error.noID);
       if (args.sex && args.sex != "Male" && args.sex != "Female")
         throw new UserInputError(error.invalidBiodata);
-      console.log(args);
       await models.Actor.update(args, {
         where: {
           id: args.id
@@ -139,26 +136,40 @@ const resolvers = {
       if (!args.name) throw new UserInputError(error.noName);
       if (!args.year_of_release) throw new UserInputError(error.noYear);
       if (!args.plot) throw new UserInputError(error.noPlot);
+      if (!args.poster) throw new UserInputError(error.noPoster);
       if (!args.producer_id || args.producer_id == 0) throw new UserInputError(error.noProducer);
       if (!args.year_of_release > 0)
         throw new UserInputError(error.invalidYear);
       var created =  await models.Movie.create(args);
-
       const promises = args.addactor.map(actor => {
         return  models.ActorMovie.create({
           actor_id: actor,
           movie_id: created.id
         });
       })
-
       await Promise.all(promises)
-
       return created
     },
     updateMovie: async (parent, args) => {
       if (!args.id) throw new UserInputError(error.noID);
       if (args.year_of_release && !args.year_of_release > 0)
         throw new UserInputError(error.invalidYear);
+
+      if(args.poster){
+        var OldMovie = await models.Movie.findOne({
+          where: {
+            id: args.id
+          }
+        });
+        if(OldMovie.poster != args.poster){
+          const path = "uploads/" + OldMovie.poster;
+          if (fs.existsSync(path)) {
+            fs.unlink(path, (err) => {
+              if (err) throw new UserInputError(err);
+            });
+          }
+        }
+      }
       await models.Movie.update(args, {
         where: {
           id: args.id
