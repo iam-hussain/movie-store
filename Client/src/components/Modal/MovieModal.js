@@ -9,6 +9,7 @@ import classnames from "classnames";
 import {
   Button,
   Card,
+  CardImg,
   CardBody,
   FormGroup,
   Form,
@@ -139,10 +140,16 @@ class MovieModal extends Component {
 
   async handleFileChange(e) {
     e.preventDefault();
-    this.setState({
-      poster_file: e.target.files[0],
-      poster: ""
-    });
+    var fileOFInput = e.target.files[0]
+    var reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+    reader.onloadend = function (event) {
+      this.setState({
+          imgSrc: [reader.result],
+          poster_file: fileOFInput,
+          poster: ""
+      })
+    }.bind(this);
   }
 
   changeValue(e) {
@@ -178,6 +185,7 @@ class MovieModal extends Component {
         name: this.props.Data ? this.props.Data.name : "",
         plot: this.props.Data ? this.props.Data.plot : "",
         poster: this.props.Data ? this.props.Data.poster : "",
+        imgSrc: this.props.Data ? new URL(config.server + this.props.Data.poster) : "",
         year_of_release: this.props.Data
           ? String(this.props.Data.year_of_release)
           : moment(new Date()).format("YYYY"),
@@ -269,11 +277,28 @@ class MovieModal extends Component {
         <div className="modal-body p-0">
           <Card className="bg-secondary shadow border-0">
             <CardBody className="px-lg-8 py-lg-8">
+            
               <div className="text-center text-muted mb-4">
                 <b>{this.props.Text.header_text}</b>
                 <br />
                 <b className="text-danger">{this.state.errorText}</b>
               </div>
+              <CardImg
+                alt="..."
+                src={this.state.imgSrc? this.state.imgSrc : ""}
+                onError={(e)=>{e.target.onerror = null; e.target.src=require("../../assets/img/theme/notFound.png")}}
+                top
+              />
+              
+              <FormGroup className='text-center'>
+                <span class="btn btn-default btn-file text-center mt-2"> Upload Image
+                  <Input
+                    type="file"
+                    required
+                    onChange={e => this.handleFileChange(e)}
+                  />
+                  </span>
+                </FormGroup>
               <Form role="form">
                 <FormGroup
                   className={classnames("mt-2", {
@@ -328,13 +353,6 @@ class MovieModal extends Component {
                     type="textarea"
                     value={this.state.plot}
                     onChange={this.handleChange}
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <Input
-                    type="file"
-                    required
-                    onChange={e => this.handleFileChange(e)}
                   />
                 </FormGroup>
 
