@@ -29,10 +29,6 @@ app.use("/", express.static(__dirname + "/uploads"));
 var uploadRoutes = require('./routes/upload');
 app.use('/upload', uploadRoutes);
 
-
-
-
-
 const server = new ApolloServer({
   typeDefs,
   resolvers,

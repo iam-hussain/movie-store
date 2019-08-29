@@ -4,12 +4,9 @@ var fs = require('fs');
 var path = require('path');
 var Sequelize = require('sequelize');
 var basename = path.basename(module.filename);
-var env = process.env.NODE_ENV || 'production';
+var env = process.env.NODE_ENV || 'development';
 var config = require(__dirname + '/../config/db.json')[env];
 var db = {};
-
-//var connection = new Sequelize(config.dialect, config.username, config.password, config)
-//connection.query(`CREATE DATABASE IF NOT EXISTS ${config.database}`)
 
 var sequelize = new Sequelize(config.database, config.username, config.password, config);
 fs
