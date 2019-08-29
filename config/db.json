@@ -14,10 +14,11 @@
       "dialect": "mysql"
     },
     "production": {
-      "username": "root",
-      "password": "",
-      "database": "moviestore",
-      "host": "localhost",
+      "username": "U2UKmNxNvv",
+      "password": "socS6zrdew",
+      "database": "U2UKmNxNvv",
+      "host": "remotemysql.com",
       "dialect": "mysql"
     }
   }
+
