@@ -30,22 +30,28 @@ var uploadRoutes = require('./routes/upload');
 app.use('/upload', uploadRoutes);
 
 
+
+
+
 const server = new ApolloServer({
   typeDefs,
-  resolvers
+  resolvers,
+  introspection:true,
+  playground:true
 });
 
 server.applyMiddleware({
-  app
+  app,
+  path: "/"
 });
 
-
+var myport = process.env.PORT || port
 models.sequelize
   .sync()
   .then(function() {
-    app.listen(port, function() {
+    app.listen(myport, function() {
       console.log(
-        `🚀Server ready at http://localhost:${port}${server.graphqlPath}`
+        `🚀Server ready at ${myport}${server.graphqlPath}`
       );
     });
     app.on("error", onError);
@@ -54,6 +60,7 @@ models.sequelize
   .catch(function(e) {
     throw new Error(e);
   });
+
 
 /* Event listener for HTTP server "error" event.*/
 function onError(error) {
